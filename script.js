@@ -1,60 +1,29 @@
-const themeSwitcher = document.getElementById("theme-switcher");
-const nav = document.getElementById("nav");
-const menuIcon = document.querySelector(".menu-icon");
+// Function to check if page is scrolled and adjust the logo size
 
-// Dark Mode Styles
-const darkMode = () => {
-  themeSwitcher.children[0].textContent = "Dark Mode";
+const checkScroll = () => {
+  const navbar = document.getElementById("navbar");
+  const logo = document.getElementById("logo");
 
-  themeSwitcher.children[1].classList.replace("fa-sun", "fa-moon");
-  localStorage.setItem("theme", "dark");
-};
+  let scrollPos = window.scrollY;
 
-// Light Mode Styles
-const lightMode = () => {
-  themeSwitcher.children[0].textContent = "Light Mode";
+  // Add/remove scrolled class based on scroll position
 
-  themeSwitcher.children[1].classList.replace("fa-moon", "fa-sun");
-  localStorage.setItem("theme", "light");
-};
-
-const switchTheme = () => {
-  const currentTheme = document.documentElement.getAttribute("data-theme");
-
-  if (!currentTheme || currentTheme === "light") {
-    document.documentElement.setAttribute("data-theme", "dark");
-    darkMode();
+  if (scrollPos > 20) {
+    navbar.classList.add("scrolled");
+    logo.classList.add("scrolled");
   } else {
-    document.documentElement.setAttribute("data-theme", "light");
-    lightMode();
+    navbar.classList.remove("scrolled");
+    logo.classList.remove("scrolled");
   }
+
+  // Calculate the new font-size based on scroll position
+  let newSize = 3 - scrollPos * 0.03; // Descrease the font-size by 0.03 for every 1px scrolled
+
+  // Clamping the font-size between 1.5 rem and 3rem;
+  newSize = Math.max(1.5, newSize);
+
+  logo.style.fontSize = newSize + "rem";
 };
 
-// Event Listener
-themeSwitcher.addEventListener("click", switchTheme);
-
-// Check Local Storage for Theme
-const currentThemeFromLocalStorage = localStorage.getItem("theme");
-if (currentThemeFromLocalStorage) {
-  document.documentElement.setAttribute(
-    "data-theme",
-    currentThemeFromLocalStorage
-  );
-
-  if (currentThemeFromLocalStorage === "dark") {
-    darkMode();
-  } else {
-    lightMode();
-  }
-}
-
-// Navigation
-const toggleMenu = () => {
-  nav.classList.toggle("active");
-  menuIcon.classList.toggle("active");
-};
-
-const hideMenu = () => {
-  nav.classList.remove("active");
-  menuIcon.classList.remove("active");
-};
+// Listen for scroll events
+window.addEventListener("scroll", checkScroll);
